@@ -1,6 +1,12 @@
 
 ###### DATOS FALTANTES : missing data ######
 
+library(naniar)
+library(simputation)
+library(dplyr)
+library(tidyverse)
+library(gridExtra)
+
 ## Los datos faltantes pueden traer efectos inesperados en nuestro análisis.
 ## Una mala imputación puede dar lugar a estimaciones (y en consecuencia),
 ## decisiones deficientes
@@ -130,7 +136,11 @@ grid.arrange(varp, casep, ncol = 2)
 # de la variable month
 varp_month <- gg_miss_var(airquality, facet = Month)
 
+# 
 gg_miss_upset(data_hw)
+gg_miss_upset(airquality)
+
+gg_miss_fct(x = airquality, fct = Month)
 
 # ---------------------------------------------------------
 # Referencias
