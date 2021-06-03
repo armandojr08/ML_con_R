@@ -1,0 +1,28 @@
+
+## Configuración de rtools después de instalarlo
+
+# writeLines('PATH="${RTOOLS40_HOME}\\usr\\bin;${PATH}"', con = "~/.Renviron")
+# Sys.which("make")
+# Se instaló los siguientes paquetes
+
+library(naniar)
+library(simputation)
+library(dplyr)
+library(tidyverse)
+library(gridExtra)
+
+# Warning en library(naniar), peligro, la version de naniar
+# fue construida bajo la version 4.0.5. No es un error. Si
+# hay problemas, deberías actualizar la versión de R
+R.version.string
+
+# Warning en library(simputation)
+# La función impute_median existe en los paquetes simputation
+# y naniar
+naniar::impute_median
+simputation::impute_median
+
+# Warning en library(dplyr)
+# filter y lag también pertenecen al paquete stats
+# intersect, setdfiff, sequetal, union también 
+# pertenecen al paquete base
