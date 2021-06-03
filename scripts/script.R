@@ -135,17 +135,86 @@ grid.arrange(varp, casep, ncol = 2)
 # Si agrupamos  nuestros datos faltantes por intermedio
 # de la variable month
 varp_month <- gg_miss_var(airquality, facet = Month)
+varp_month
 
-# 
+# Algunas funciones importantes
+v1 <- c(2,NA,5,12,NA,10,NA,9,NA,NA)
+v2 <- c(23,NA,11,12,111,23,NA,0,10,NA)
+v3 <- c(12,NA,12,16,124,2,12,1,9,NA)
+v4 <- c(seq(1,9,1),NA)
+df1 <- data.frame(v1,v2,v3,v4)
+df1;dim(df1)
+gg_miss_upset(df1)
+# barras horizontales  : cantidad de NA
+# baras verticales     : intersecciones en filas con NA
+# números en barras v. : 2+1*2+1*3+1*4 = cantidad de NA
+
 gg_miss_upset(data_hw)
 gg_miss_upset(airquality)
+n_miss(airquality$Wind)
 
+# mapa de calor
 gg_miss_fct(x = airquality, fct = Month)
+# el mes 6 concentra más del 60% de los datos faltantes
+# en la variable Ozono. Mes 6 muy conflictivo.
+
+# Analizando dataset pedestrian
+View(pedestrian)
+str(pedestrian)
+names(pedestrian)
+dim(pedestrian)
+gg_miss_span(pedestrian, var = hourly_counts, span_every = 3000)
+# se agrupó en lapsos de 3000 elementos, las barras
+# verticales son grupos, la primera barra comprende
+# los 3000 primeros elementos
+
+# Analizando dataset riskfactors, variable sexo
+View(riskfactors)
+dim(riskfactors)
+str(riskfactors)
+n_miss(riskfactors); prop_miss(riskfactors) # 14.24% de NA
+# variable sexo
+class(riskfactors$sex) # es tipo categórica
+levels(riskfactors$sex)
+any(is.na(riskfactors$sex)) # no contiene ningún NA
+table(riskfactors$sex)      # distribución 
+barplot(table(riskfactors$sex))
+
+vis_miss(riskfactors)
+limpiaNA <- na.omit(riskfactors)
+dim(limpiaNA) # Toda fila contiene por lo menos un NA
+
+# Si decido que toda columna con un porcentaje de NA
+# por encima de 20 % se elimine
+colSums(is.na(riskfactors)) # NA por columnas
+rowSums(is.na(riskfactors)) # NA por filas
+
+NAs_rf <- riskfactors %>% map_df(function(x) sum(is.na(x))) %>%
+  gather(variable, Num_NAs)
+NAs_rf$porc_NA <- NAs_rf$Num_NAs*100/nrow((riskfactors))
+NAs_rf
+
+x <- vector()
+for (i in 1:dim(riskfactors)[2]) {
+  if (prop_miss(riskfactors[,i]) > 0.2) {
+    x <- c(x,i)
+  }
+}
+x # columnas que cumplen la condición
+
+rf2 <- riskfactors[,-x]
+dim(rf2)
+vis_miss(rf2)
+# Evaluar si lo que queda generaría algún problema
+
 
 # ---------------------------------------------------------
 # Referencias
 # https://cran.r-project.org/web/packages/naniar/index.html
 # https://cran.r-project.org/web/packages/naniar/vignettes/getting-started-w-naniar.html
+# https://www.rdocumentation.org/packages/naniar/versions/0.6.1
 
+# Resolución de errores presentados al correr el script
+# https://stackoverflow.com/questions/20155581/persistent-invalid-graphics-state-error-when-using-ggplot2
 
 
