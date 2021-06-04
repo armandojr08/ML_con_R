@@ -188,12 +188,14 @@ dim(limpiaNA) # Toda fila contiene por lo menos un NA
 # por encima de 20 % se elimine
 colSums(is.na(riskfactors)) # NA por columnas
 rowSums(is.na(riskfactors)) # NA por filas
-
+# 1era forma
 NAs_rf <- riskfactors %>% map_df(function(x) sum(is.na(x))) %>%
   gather(variable, Num_NAs)
 NAs_rf$porc_NA <- NAs_rf$Num_NAs*100/nrow((riskfactors))
 NAs_rf
-
+var_RF <- NAs_rf[NAs_rf$porc_NA > 20,]$variable
+rf1 <- riskfactors[,!(colnames(riskfactors) %in% var_RF)]
+# 2da forma
 x <- vector()
 for (i in 1:dim(riskfactors)[2]) {
   if (prop_miss(riskfactors[,i]) > 0.2) {
